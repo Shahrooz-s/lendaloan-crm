@@ -1,0 +1,13 @@
+{
+    "name": "GoogleWorkspace",
+    "alias": "googleworkspace",
+    "version": "1.0.0",
+    "requires_at_least": "1.5.1",
+    "description": "Google Workspace module by Themesic",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\GoogleWorkspace\\Providers\\GoogleWorkspaceServiceProvider"
+    ],
+    "files": []
+}
