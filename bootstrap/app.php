@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 require_once __DIR__.'/../detached.php';
 
+foreach (glob(__DIR__.'/../modules/*/vendor/autoload.php') ?: [] as $moduleAutoload) {
+    require_once $moduleAutoload;
+}
+
 return CustomApplication::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
