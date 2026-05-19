@@ -1,0 +1,1 @@
+const n=Vue.toDisplayString,o=_app_.router.useRoute,a=_app_.router.useRouter,s={__name:"MultiFactorAuthSettings",setup(e){return o(),a(),(t,u)=>n(t.$route.path)}},p=_app_.i18n.translate;window.Innoclapps&&Innoclapps.booting(function(e,t){t.addRoute("settings",{path:"mfa",component:s,meta:{title:p("multifactorauth::app.settings.title")}})});
