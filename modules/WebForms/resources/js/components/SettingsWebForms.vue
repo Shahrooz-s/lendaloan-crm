@@ -39,27 +39,27 @@ const opnFormBaseUrl = 'https://form.lendaloan.com.au'
 const pages = [
   {
     route: 'web-forms-index',
-    title: 'Forms Dashboard',
-    description: 'Manage Lend A Loan forms and open existing form builders.',
+    title: 'Manage Forms',
+    description: 'Manage Lend A Loan forms from the Concord workspace.',
     path: '/home',
   },
   {
     route: 'web-form-create',
     title: 'Create Form',
-    description: 'Start a new form inside the Concord forms workspace.',
+    description: 'Build a new form inside the Concord forms workspace.',
     path: '/forms/create',
   },
   {
-    route: 'web-form-integrations',
-    title: 'Integrations',
-    description: 'Connect form automations and delivery channels.',
-    path: '/integrations',
+    route: 'web-form-submissions',
+    title: 'Submissions',
+    description: 'Review captured form responses before syncing records.',
+    path: '/home',
   },
   {
-    route: 'web-form-account',
-    title: 'Form Account',
-    description: 'Manage the Lend A Loan forms workspace profile and account.',
-    path: '/home',
+    route: 'web-form-automations',
+    title: 'Automations',
+    description: 'Connect form delivery, webhooks, and workflow actions.',
+    path: '/integrations',
   },
 ]
 
@@ -70,6 +70,11 @@ const activePage = computed(() => {
 })
 
 const iframeSrc = computed(() => {
-  return `${opnFormBaseUrl}${activePage.value.path}`
+  const url = new URL(activePage.value.path, opnFormBaseUrl)
+
+  url.searchParams.set('embed', 'concord')
+  url.searchParams.set('workspace', 'lendaloan')
+
+  return url.toString()
 })
 </script>
