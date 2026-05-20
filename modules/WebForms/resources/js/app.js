@@ -49,8 +49,8 @@ if (window.Innoclapps) {
     })
 
     router.addRoute('settings', {
-      path: 'forms/integrations',
-      name: 'web-form-integrations',
+      path: 'forms/submissions',
+      name: 'web-form-submissions',
       component: SettingsWebForms,
       meta: {
         title: translate('webforms::form.forms'),
@@ -58,8 +58,8 @@ if (window.Innoclapps) {
     })
 
     router.addRoute('settings', {
-      path: 'forms/account',
-      name: 'web-form-account',
+      path: 'forms/automations',
+      name: 'web-form-automations',
       component: SettingsWebForms,
       meta: {
         title: translate('webforms::form.forms'),
