@@ -48,24 +48,19 @@ class WebFormsServiceProvider extends ModuleServiceProvider
     {
         return SettingsMenuItem::make('web-forms', __('webforms::form.forms'))
             ->withChildren([
-                SettingsMenuItem::make('opnform-dashboard', 'Forms Dashboard')
+                SettingsMenuItem::make('forms-manage', 'Manage Forms')
                     ->path('/forms')
-                    ->icon('ViewGrid')
                     ->order(10),
-                SettingsMenuItem::make('opnform-create', 'Create Form')
+                SettingsMenuItem::make('forms-create', 'Create Form')
                     ->path('/forms/create')
-                    ->icon('Plus')
                     ->order(20),
-                SettingsMenuItem::make('opnform-integrations', 'Integrations')
-                    ->path('/forms/integrations')
-                    ->icon('Puzzle')
+                SettingsMenuItem::make('forms-submissions', 'Submissions')
+                    ->path('/forms/submissions')
                     ->order(30),
-                SettingsMenuItem::make('opnform-account', 'Form Account')
-                    ->path('/forms/account')
-                    ->icon('User')
+                SettingsMenuItem::make('forms-automations', 'Automations')
+                    ->path('/forms/automations')
                     ->order(40),
             ])
-            ->icon('MenuAlt3')
             ->order(30);
     }
 
