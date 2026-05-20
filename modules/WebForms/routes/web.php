@@ -13,6 +13,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Updater\Http\Middleware\PreventRequestsWhenMigrationNeeded;
 use Modules\Updater\Http\Middleware\PreventRequestsWhenUpdateNotFinished;
+use Modules\WebForms\Http\Controllers\OpnFormWebhookController;
 use Modules\WebForms\Http\Controllers\WebFormController;
 
 Route::withoutMiddleware([
@@ -21,4 +22,6 @@ Route::withoutMiddleware([
 ])->group(function () {
     Route::get('/forms/f/{uuid}', [WebFormController::class, 'show'])->name('webform.view');
     Route::post('/forms/f/{uuid}', [WebFormController::class, 'store'])->name('webform.process');
+    Route::post('/webhook/opnform', OpnFormWebhookController::class)->name('opnform.webhook');
+    Route::post('/forms/opnform/webhook', OpnFormWebhookController::class)->name('opnform.webhook.legacy');
 });
