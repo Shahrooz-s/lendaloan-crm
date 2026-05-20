@@ -13,7 +13,6 @@ import { translate } from '@/Core/i18n'
 import RecordTabTimelineWebFormSubmission from './components/RecordTabTimelineWebFormSubmission.vue'
 import SettingsWebForms from './components/SettingsWebForms.vue'
 import WebFormPublicView from './views/WebFormPublicView.vue'
-import CreateWebForm from './views/WebFormsCreate.vue'
 import EditWebForm from './views/WebFormsEdit.vue'
 
 if (window.Innoclapps) {
@@ -38,13 +37,33 @@ if (window.Innoclapps) {
       meta: {
         title: translate('webforms::form.forms'),
       },
-      children: [
-        {
-          path: 'create',
-          name: 'web-form-create',
-          component: CreateWebForm,
-        },
-      ],
+    })
+
+    router.addRoute('settings', {
+      path: 'forms/create',
+      name: 'web-form-create',
+      component: SettingsWebForms,
+      meta: {
+        title: translate('webforms::form.forms'),
+      },
+    })
+
+    router.addRoute('settings', {
+      path: 'forms/integrations',
+      name: 'web-form-integrations',
+      component: SettingsWebForms,
+      meta: {
+        title: translate('webforms::form.forms'),
+      },
+    })
+
+    router.addRoute('settings', {
+      path: 'forms/account',
+      name: 'web-form-account',
+      component: SettingsWebForms,
+      meta: {
+        title: translate('webforms::form.forms'),
+      },
     })
   })
 }
