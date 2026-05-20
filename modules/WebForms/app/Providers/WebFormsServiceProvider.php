@@ -47,7 +47,24 @@ class WebFormsServiceProvider extends ModuleServiceProvider
     protected function settingsMenu(): SettingsMenuItem
     {
         return SettingsMenuItem::make('web-forms', __('webforms::form.forms'))
-            ->path('/forms')
+            ->withChildren([
+                SettingsMenuItem::make('opnform-dashboard', 'Forms Dashboard')
+                    ->path('/forms')
+                    ->icon('ViewGrid')
+                    ->order(10),
+                SettingsMenuItem::make('opnform-create', 'Create Form')
+                    ->path('/forms/create')
+                    ->icon('Plus')
+                    ->order(20),
+                SettingsMenuItem::make('opnform-integrations', 'Integrations')
+                    ->path('/forms/integrations')
+                    ->icon('Puzzle')
+                    ->order(30),
+                SettingsMenuItem::make('opnform-account', 'Form Account')
+                    ->path('/forms/account')
+                    ->icon('User')
+                    ->order(40),
+            ])
             ->icon('MenuAlt3')
             ->order(30);
     }
