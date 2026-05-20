@@ -143,12 +143,19 @@ class Deal extends Resource implements AcceptsCustomFields, BillableResource, Ex
     public function menu(): array
     {
         return [
-            MenuItem::make(static::label(), '/deals')
-                ->icon(static::$icon)
+            MenuItem::group('Board', [
+                MenuItem::make(static::label(), '/deals')
+                    ->inQuickCreate()
+                    ->keyboardShortcutChar('D')
+                    ->singularName(static::singularLabel()),
+                MenuItem::make(__('deals::board.board'), '/deals/board'),
+            ], static::$icon)
                 ->position(5)
                 ->inQuickCreate()
+                ->quickCreateRoute('/deals/create')
+                ->quickCreateName(static::singularLabel())
                 ->keyboardShortcutChar('D')
-                ->singularName(static::singularLabel()),
+                ->defaultCollapsed(false),
         ];
     }
 

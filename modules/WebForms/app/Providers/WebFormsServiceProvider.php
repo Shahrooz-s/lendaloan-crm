@@ -57,9 +57,12 @@ class WebFormsServiceProvider extends ModuleServiceProvider
                 SettingsMenuItem::make('forms-submissions', 'Submissions')
                     ->path('/forms/submissions')
                     ->order(30),
+                SettingsMenuItem::make('forms-templates', 'Templates')
+                    ->path('/forms/templates')
+                    ->order(40),
                 SettingsMenuItem::make('forms-automations', 'Automations')
                     ->path('/forms/automations')
-                    ->order(40),
+                    ->order(50),
             ])
             ->order(30);
     }

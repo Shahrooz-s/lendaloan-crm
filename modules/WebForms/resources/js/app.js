@@ -58,6 +58,15 @@ if (window.Innoclapps) {
     })
 
     router.addRoute('settings', {
+      path: 'forms/templates',
+      name: 'web-form-templates',
+      component: SettingsWebForms,
+      meta: {
+        title: translate('webforms::form.forms'),
+      },
+    })
+
+    router.addRoute('settings', {
       path: 'forms/automations',
       name: 'web-form-automations',
       component: SettingsWebForms,

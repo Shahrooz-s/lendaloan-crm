@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\HtmlString;
 use Modules\Activities\Models\Activity;
 use Modules\Activities\Models\ActivityType;
@@ -146,6 +147,19 @@ class OpnFormSubmissionBridge
             ]));
         }
 
+        $this->fillCustomFields($contact, [
+            'cf_contact_role' => $this->firstByLabel($fields, ['contact role', 'role']),
+            'cf_applicant_role' => $this->firstByLabel($fields, ['applicant role', 'borrower role', 'borrower type']),
+            'cf_brokerengine_contact_id' => $this->firstByLabel($fields, ['brokerengine contact id', 'broker engine contact id']),
+            'cf_afg_flex_contact_id' => $this->firstByLabel($fields, ['afg flex contact id', 'flex contact id']),
+            'cf_fact_find_session_id' => $this->firstByLabel($fields, ['fact find session', 'fact find id', 'fact-find id', 'session id']),
+            'cf_privacy_consent_status' => $this->firstByLabel($fields, ['privacy consent', 'privacy consent status']),
+            'cf_marketing_consent_status' => $this->firstByLabel($fields, ['marketing consent', 'marketing consent status']),
+            'cf_date_of_birth' => $this->date($this->firstByLabel($fields, ['date of birth', 'dob', 'birth date'])),
+            'cf_preferred_name' => $this->firstByLabel($fields, ['preferred name']),
+            'cf_residency_status' => $this->firstByLabel($fields, ['residency status', 'residential status']),
+        ]);
+
         return $contact;
     }
 
@@ -158,6 +172,8 @@ class OpnFormSubmissionBridge
         }
 
         if ($company = Company::where('name', $name)->first()) {
+            $this->fillCustomFields($company, $this->companyCustomFields($fields));
+
             return $company;
         }
 
@@ -172,7 +188,20 @@ class OpnFormSubmissionBridge
 
         $company->save();
 
+        $this->fillCustomFields($company, $this->companyCustomFields($fields));
+
         return $company;
+    }
+
+    protected function companyCustomFields(array $fields): array
+    {
+        return [
+            'cf_abn' => $this->firstByLabel($fields, ['abn', 'australian business number']),
+            'cf_acn' => $this->firstByLabel($fields, ['acn', 'australian company number']),
+            'cf_organisation_type' => $this->firstByLabel($fields, ['organisation type', 'organization type', 'company type', 'entity type']),
+            'cf_company_role' => $this->firstByLabel($fields, ['company role', 'business role']),
+            'cf_external_reference' => $this->firstByLabel($fields, ['external reference', 'external id', 'crm reference']),
+        ];
     }
 
     protected function createDeal(array $fields, User $owner, Pipeline $pipeline, $stage): Deal
@@ -192,6 +221,31 @@ class OpnFormSubmissionBridge
         ]);
 
         $deal->save();
+
+        $this->fillCustomFields($deal, [
+            'cf_deal_type' => $this->firstByLabel($fields, ['deal type', 'application type', 'loan type']),
+            'cf_application_status' => $this->firstByLabel($fields, ['application status', 'loan status']),
+            'cf_fact_find_status' => $this->firstByLabel($fields, ['fact find status', 'fact-find status']),
+            'cf_fact_find_session_id' => $this->firstByLabel($fields, ['fact find session', 'fact find id', 'fact-find id', 'session id']),
+            'cf_mortgage_application_id' => $this->firstByLabel($fields, ['mortgage application id', 'application id']),
+            'cf_target_settlement_date' => $this->date($this->firstByLabel($fields, ['target settlement date', 'settlement date'])),
+            'cf_estimated_property_value' => $this->money($this->firstByLabel($fields, ['estimated property value', 'property value', 'purchase price'])),
+            'cf_loan_purpose' => $this->firstByLabel($fields, ['loan purpose', 'purpose']),
+            'cf_lixi_stage' => $this->firstByLabel($fields, ['lixi stage', 'application stage']),
+            'cf_document_status' => $this->firstByLabel($fields, ['document status', 'documents status', 'docs status']),
+            'cf_serviceability_status' => $this->firstByLabel($fields, ['serviceability status', 'servicing status']),
+            'cf_product_search_url' => $this->firstByLabel($fields, ['product search url', 'product tool url']),
+            'cf_product_search_status' => $this->firstByLabel($fields, ['product search status', 'product status']),
+            'cf_brokerengine_deal_id' => $this->firstByLabel($fields, ['brokerengine deal id', 'broker engine deal id']),
+            'cf_afg_flex_application_id' => $this->firstByLabel($fields, ['afg flex application id', 'flex application id']),
+            'cf_applyonline_reference' => $this->firstByLabel($fields, ['applyonline reference', 'apply online reference']),
+            'cf_submission_snapshot_reference' => $this->firstByLabel($fields, ['submission snapshot reference', 'submission snapshot url']),
+            'cf_missing_information_count' => $this->integer($this->firstByLabel($fields, ['missing information count', 'missing info count'])),
+            'cf_form_submission_reference' => $this->firstByLabel($fields, ['form submission reference', 'submission id']),
+            'cf_security_property_address' => $this->firstByLabel($fields, ['security property address', 'property address']),
+            'cf_estimated_loan_amount' => $this->money($this->firstByLabel($fields, ['estimated loan amount', 'loan amount', 'borrow amount'])),
+            'cf_lvr' => $this->decimal($this->firstByLabel($fields, ['lvr', 'loan to value ratio'])),
+        ]);
 
         return $deal;
     }
@@ -340,6 +394,27 @@ class OpnFormSubmissionBridge
         return null;
     }
 
+    protected function fillCustomFields($model, array $values): void
+    {
+        $table = $model->getTable();
+
+        foreach ($values as $field => $value) {
+            if ($value === null || $value === '' || ! Schema::hasColumn($table, $field)) {
+                continue;
+            }
+
+            if (! empty($model->{$field}) && $model->{$field} !== $value) {
+                continue;
+            }
+
+            $model->{$field} = $value;
+        }
+
+        if ($model->isDirty()) {
+            $model->save();
+        }
+    }
+
     protected function scalarValue(mixed $value): mixed
     {
         return is_array($value) ? Arr::first(Arr::flatten($value)) : $value;
@@ -363,6 +438,20 @@ class OpnFormSubmissionBridge
         $number = preg_replace('/[^0-9.]/', '', (string) $value);
 
         return $number === '' ? null : (float) $number;
+    }
+
+    protected function decimal(mixed $value): ?float
+    {
+        $number = preg_replace('/[^0-9.]/', '', (string) $value);
+
+        return $number === '' ? null : (float) $number;
+    }
+
+    protected function integer(mixed $value): ?int
+    {
+        $number = preg_replace('/[^0-9]/', '', (string) $value);
+
+        return $number === '' ? null : (int) $number;
     }
 
     protected function date(mixed $value): ?string
